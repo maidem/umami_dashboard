@@ -20,7 +20,7 @@ Alle Widgets zeigen die letzten 14 Tage und stehen in der Dashboard-Gruppe „Sy
 ## Setup
 
 ```bash
-composer config repositories.umami-dashboard vcs git@github.com:maidem/umami_dashboard.git
+composer config repositories.umami-dashboard vcs https://github.com/maidem/umami_dashboard.git
 composer require maidem/umami-dashboard
 ```
 
