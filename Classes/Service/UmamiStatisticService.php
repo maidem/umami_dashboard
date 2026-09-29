@@ -35,7 +35,7 @@ class UmamiStatisticService
         }
 
         try {
-            $token = $this->login($config);
+            $token = $config['apiKey'] !== '' ? $config['apiKey'] : $this->login($config);
             $range = [
                 'startAt' => (new \DateTimeImmutable('-' . self::DAYS . ' days'))->getTimestamp() * 1000,
                 'endAt' => time() * 1000,
@@ -81,7 +81,7 @@ class UmamiStatisticService
      * Environment variables override the extension configuration, so the same
      * extension can run in several projects without touching settings.php.
      *
-     * @return array{host: string, websiteId: string, username: string, password: string}|null
+     * @return array{host: string, websiteId: string, apiKey: string, username: string, password: string}|null
      */
     private function getConfig(): ?array
     {
@@ -89,11 +89,14 @@ class UmamiStatisticService
         $values = [
             'host' => getenv('UMAMI_HOST') ?: ($config['host'] ?? ''),
             'websiteId' => getenv('UMAMI_WEBSITE_ID') ?: ($config['websiteId'] ?? ''),
+            'apiKey' => getenv('UMAMI_API_KEY') ?: ($config['apiKey'] ?? ''),
             'username' => getenv('UMAMI_USERNAME') ?: ($config['username'] ?? ''),
             'password' => getenv('UMAMI_PASSWORD') ?: ($config['password'] ?? ''),
         ];
 
-        if (in_array('', $values, true)) {
+        // An API key replaces the username/password login
+        $hasCredentials = $values['apiKey'] !== '' || ($values['username'] !== '' && $values['password'] !== '');
+        if ($values['host'] === '' || $values['websiteId'] === '' || !$hasCredentials) {
             return null;
         }
         $values['host'] = rtrim($values['host'], '/');

@@ -4,6 +4,9 @@ host =
 # cat=basic; type=string; label= Umami Website ID
 websiteId =
 
+# cat=basic; type=string; label= Umami API-Key (ersetzt Benutzername/Passwort)
+apiKey =
+
 # cat=basic; type=string; label= Umami Benutzername (Nur-Lese-Benutzer empfohlen)
 username =
 

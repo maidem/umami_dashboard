@@ -34,14 +34,15 @@ Erweiterungskonfiguration `umami_dashboard` (**Einstellungen → Erweiterungskon
 | --- | --- | --- |
 | `host` | `UMAMI_HOST` | `https://log.example.com` |
 | `websiteId` | `UMAMI_WEBSITE_ID` | UUID aus Umami (Einstellungen → Websites → Bearbeiten) |
-| `username` | `UMAMI_USERNAME` | eigener Nur-Lese-Benutzer |
-| `password` | `UMAMI_PASSWORD` | nur per Env-Variable setzen |
+| `apiKey` | `UMAMI_API_KEY` | API-Key aus Umami (Einstellungen → API keys), ersetzt Benutzername/Passwort |
+| `username` | `UMAMI_USERNAME` | Alternative zum API-Key: eigener Nur-Lese-Benutzer |
+| `password` | `UMAMI_PASSWORD` | Alternative zum API-Key, nur per Env-Variable setzen |
 
-Sind Angaben unvollständig oder die API nicht erreichbar, zeigen die Widgets 0 bzw. eine leere Liste.
+Der API-Key wird als `Authorization: Bearer` gesendet. Ohne Key meldet sich die Extension mit Benutzername und Passwort an. Sind Angaben unvollständig oder die API nicht erreichbar, zeigen die Widgets 0 bzw. eine leere Liste.
 
 ## Technik
 
-- `Classes/Service/UmamiStatisticService.php` – Login per `POST /api/auth/login`, danach `/stats`, `/pageviews` und `/metrics?type=country`. Das Ergebnis wird 5 Minuten im Cache `umami_dashboard` gehalten (`ext_localconf.php`).
+- `Classes/Service/UmamiStatisticService.php` – Authentifizierung per API-Key (oder Login über `POST /api/auth/login`), danach `/stats`, `/pageviews` und `/metrics?type=country`. Das Ergebnis wird 5 Minuten im Cache `umami_dashboard` gehalten (`ext_localconf.php`).
 - `Classes/Dashboard/*DataProvider.php` – bereiten die Daten für `NumberWithIconWidget`, `BarChartWidget` und `ListWidget` auf.
 - `Configuration/Services.yaml` – Widget-Registrierung
 - `Resources/Private/Language/locallang.xlf` – Widget-Labels
