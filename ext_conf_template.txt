@@ -1,0 +1,11 @@
+# cat=basic; type=string; label= Umami Host (z.B. https://log.example.com)
+host =
+
+# cat=basic; type=string; label= Umami Website ID
+websiteId =
+
+# cat=basic; type=string; label= Umami Benutzername (Nur-Lese-Benutzer empfohlen)
+username =
+
+# cat=basic; type=string; label= Umami Passwort
+password =

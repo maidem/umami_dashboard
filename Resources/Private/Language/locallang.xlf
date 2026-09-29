@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+    <file source-language="en" datatype="plaintext" original="messages" date="2026-09-29" product-name="umami_dashboard">
+        <body>
+            <trans-unit id="widgets.visitors.title" xml:space="preserve">
+                <source>Besucher</source>
+            </trans-unit>
+            <trans-unit id="widgets.visitors.subtitle" xml:space="preserve">
+                <source>Letzte 14 Tage (Umami)</source>
+            </trans-unit>
+            <trans-unit id="widgets.visitors.description" xml:space="preserve">
+                <source>Zeigt die Anzahl der Besucher laut Umami.</source>
+            </trans-unit>
+            <trans-unit id="widgets.pageviews.title" xml:space="preserve">
+                <source>Seitenaufrufe</source>
+            </trans-unit>
+            <trans-unit id="widgets.pageviews.subtitle" xml:space="preserve">
+                <source>Letzte 14 Tage (Umami)</source>
+            </trans-unit>
+            <trans-unit id="widgets.pageviews.description" xml:space="preserve">
+                <source>Zeigt die Anzahl der Seitenaufrufe laut Umami.</source>
+            </trans-unit>
+            <trans-unit id="widgets.pageviewsChart.title" xml:space="preserve">
+                <source>Umami Verlauf</source>
+            </trans-unit>
+            <trans-unit id="widgets.pageviewsChart.description" xml:space="preserve">
+                <source>Seitenaufrufe und Besucher der letzten 14 Tage pro Tag.</source>
+            </trans-unit>
+            <trans-unit id="widgets.countries.title" xml:space="preserve">
+                <source>Besucher nach Land</source>
+            </trans-unit>
+            <trans-unit id="widgets.countries.description" xml:space="preserve">
+                <source>Top-Länder der Besucher der letzten 14 Tage mit Flagge.</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

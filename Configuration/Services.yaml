@@ -1,0 +1,78 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  Maidem\UmamiDashboard\:
+    resource: '../Classes/*'
+
+  cache.umami_dashboard:
+    class: 'TYPO3\CMS\Core\Cache\Frontend\FrontendInterface'
+    factory: ['@TYPO3\CMS\Core\Cache\CacheManager', 'getCache']
+    arguments:
+      $identifier: 'umami_dashboard'
+
+  Maidem\UmamiDashboard\Service\UmamiStatisticService:
+    arguments:
+      $cache: '@cache.umami_dashboard'
+
+  dashboard.widget.umamiVisitors:
+    class: 'TYPO3\CMS\Dashboard\Widgets\NumberWithIconWidget'
+    arguments:
+      $dataProvider: '@Maidem\UmamiDashboard\Dashboard\VisitorsDataProvider'
+      $options:
+        title: 'LLL:EXT:umami_dashboard/Resources/Private/Language/locallang.xlf:widgets.visitors.title'
+        subtitle: 'LLL:EXT:umami_dashboard/Resources/Private/Language/locallang.xlf:widgets.visitors.subtitle'
+        icon: 'actions-user'
+    tags:
+      - name: dashboard.widget
+        identifier: 'umamiVisitors'
+        groupNames: 'systemInfo'
+        title: 'LLL:EXT:umami_dashboard/Resources/Private/Language/locallang.xlf:widgets.visitors.title'
+        description: 'LLL:EXT:umami_dashboard/Resources/Private/Language/locallang.xlf:widgets.visitors.description'
+        iconIdentifier: 'content-widget-number'
+
+  dashboard.widget.umamiPageviews:
+    class: 'TYPO3\CMS\Dashboard\Widgets\NumberWithIconWidget'
+    arguments:
+      $dataProvider: '@Maidem\UmamiDashboard\Dashboard\PageviewsDataProvider'
+      $options:
+        title: 'LLL:EXT:umami_dashboard/Resources/Private/Language/locallang.xlf:widgets.pageviews.title'
+        subtitle: 'LLL:EXT:umami_dashboard/Resources/Private/Language/locallang.xlf:widgets.pageviews.subtitle'
+        icon: 'actions-eye'
+    tags:
+      - name: dashboard.widget
+        identifier: 'umamiPageviews'
+        groupNames: 'systemInfo'
+        title: 'LLL:EXT:umami_dashboard/Resources/Private/Language/locallang.xlf:widgets.pageviews.title'
+        description: 'LLL:EXT:umami_dashboard/Resources/Private/Language/locallang.xlf:widgets.pageviews.description'
+        iconIdentifier: 'content-widget-number'
+
+  dashboard.widget.umamiPageviewsChart:
+    class: 'TYPO3\CMS\Dashboard\Widgets\BarChartWidget'
+    arguments:
+      $dataProvider: '@Maidem\UmamiDashboard\Dashboard\PageviewsChartDataProvider'
+    tags:
+      - name: dashboard.widget
+        identifier: 'umamiPageviewsChart'
+        groupNames: 'systemInfo'
+        title: 'LLL:EXT:umami_dashboard/Resources/Private/Language/locallang.xlf:widgets.pageviewsChart.title'
+        description: 'LLL:EXT:umami_dashboard/Resources/Private/Language/locallang.xlf:widgets.pageviewsChart.description'
+        iconIdentifier: 'content-widget-chart'
+        height: 'medium'
+        width: 'large'
+
+  dashboard.widget.umamiCountries:
+    class: 'TYPO3\CMS\Dashboard\Widgets\ListWidget'
+    arguments:
+      $dataProvider: '@Maidem\UmamiDashboard\Dashboard\CountriesDataProvider'
+    tags:
+      - name: dashboard.widget
+        identifier: 'umamiCountries'
+        groupNames: 'systemInfo'
+        title: 'LLL:EXT:umami_dashboard/Resources/Private/Language/locallang.xlf:widgets.countries.title'
+        description: 'LLL:EXT:umami_dashboard/Resources/Private/Language/locallang.xlf:widgets.countries.description'
+        iconIdentifier: 'content-widget-list'
+        height: 'medium'
+        width: 'small'
