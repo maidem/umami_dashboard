@@ -13,7 +13,7 @@ Alle Widgets zeigen die letzten 14 Tage und stehen in der Dashboard-Gruppe „Sy
 
 ## Voraussetzungen
 
-- TYPO3 14.1+, PHP 8.4+ mit `intl` und `mbstring`
+- TYPO3 14.1+, PHP 8.2+ mit `intl` und `mbstring`
 - `typo3/cms-dashboard`
 - Erreichbare Umami-Instanz (Self-Hosted) mit Benutzer und Website-ID
 
@@ -38,7 +38,7 @@ Erweiterungskonfiguration `umami_dashboard` (**Einstellungen → Erweiterungskon
 | `username` | `UMAMI_USERNAME` | Alternative zum API-Key: eigener Nur-Lese-Benutzer |
 | `password` | `UMAMI_PASSWORD` | Alternative zum API-Key, nur per Env-Variable setzen |
 
-Der API-Key wird als `Authorization: Bearer` gesendet. Ohne Key meldet sich die Extension mit Benutzername und Passwort an. Sind Angaben unvollständig oder die API nicht erreichbar, zeigen die Widgets 0 bzw. eine leere Liste.
+Der API-Key wird als `Authorization: Bearer` gesendet. Ohne Key meldet sich die Extension mit Benutzername und Passwort an. Sind Angaben unvollständig oder die API nicht erreichbar, zeigen die Widgets 0 bzw. eine leere Liste. Ein Fehler wird protokolliert und 60 Sekunden lang nicht erneut versucht.
 
 ## Technik
 

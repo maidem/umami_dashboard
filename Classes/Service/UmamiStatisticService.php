@@ -4,29 +4,35 @@ declare(strict_types=1);
 
 namespace Maidem\UmamiDashboard\Service;
 
+use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Http\RequestFactory;
 
-class UmamiStatisticService
+final class UmamiStatisticService
 {
     private const DAYS = 14;
+    private const CACHE_IDENTIFIER = 'umami_dashboard_statistic';
+    private const FAILURE_MARKER = 'failed';
+    private const LIFETIME_SUCCESS = 300;
+    private const LIFETIME_FAILURE = 60;
 
     public function __construct(
         private readonly ExtensionConfiguration $extensionConfiguration,
         private readonly RequestFactory $requestFactory,
         private readonly FrontendInterface $cache,
+        private readonly LoggerInterface $logger,
     ) {}
 
-    /**
-     * @return array{visitors: int, pageviews: int, byDate: array<string, array{pageviews: int, sessions: int}>, countries: array<string, int>}|null
-     */
-    public function getStatistic(): ?array
+    public function getStatistic(): ?Statistic
     {
-        $cacheIdentifier = 'umami_dashboard_statistic';
-        $cached = $this->cache->get($cacheIdentifier);
-        if (is_array($cached)) {
+        $cached = $this->cache->get(self::CACHE_IDENTIFIER);
+        if ($cached instanceof Statistic) {
             return $cached;
+        }
+        if ($cached === self::FAILURE_MARKER) {
+            // a recent request failed, do not retry on every dashboard reload
+            return null;
         }
 
         $config = $this->getConfig();
@@ -43,18 +49,21 @@ class UmamiStatisticService
             $base = $config['host'] . '/api/websites/' . rawurlencode($config['websiteId']);
 
             $stats = $this->get($token, $base . '/stats', $range);
-            $series = $this->get($token, $base . '/pageviews', $range + ['unit' => 'day', 'timezone' => 'Europe/Berlin']);
+            $series = $this->get($token, $base . '/pageviews', $range + ['unit' => 'day', 'timezone' => date_default_timezone_get()]);
             $countryRows = $this->get($token, $base . '/metrics', $range + ['type' => 'country']);
-        } catch (\Throwable) {
+        } catch (\Throwable $exception) {
+            $this->logger->error('Umami statistic request failed: ' . $exception->getMessage(), ['exception' => $exception]);
+            $this->cache->set(self::CACHE_IDENTIFIER, self::FAILURE_MARKER, [], self::LIFETIME_FAILURE);
             return null;
         }
 
         $byDate = [];
-        foreach ($series['pageviews'] ?? [] as $point) {
-            $byDate[substr((string)$point['x'], 0, 10)]['pageviews'] = (int)$point['y'];
-        }
-        foreach ($series['sessions'] ?? [] as $point) {
-            $byDate[substr((string)$point['x'], 0, 10)]['sessions'] = (int)$point['y'];
+        foreach (['pageviews', 'sessions'] as $metric) {
+            foreach ($series[$metric] ?? [] as $point) {
+                $day = substr((string)$point['x'], 0, 10);
+                $byDate[$day] ??= ['pageviews' => 0, 'sessions' => 0];
+                $byDate[$day][$metric] = (int)$point['y'];
+            }
         }
         ksort($byDate);
 
@@ -63,16 +72,15 @@ class UmamiStatisticService
             $countries[(string)$row['x']] = (int)$row['y'];
         }
 
-        $result = [
-            // Umami >= 2 returns {value, prev}, older versions return the plain number
-            'visitors' => (int)($stats['visitors']['value'] ?? $stats['visitors'] ?? 0),
-            'pageviews' => (int)($stats['pageviews']['value'] ?? $stats['pageviews'] ?? 0),
-            'byDate' => $byDate,
-            'countries' => $countries,
-        ];
+        // Umami >= 2 returns {value, prev}, older versions return the plain number
+        $result = new Statistic(
+            (int)($stats['visitors']['value'] ?? $stats['visitors'] ?? 0),
+            (int)($stats['pageviews']['value'] ?? $stats['pageviews'] ?? 0),
+            $byDate,
+            $countries,
+        );
 
-        // 5min cache, avoids hammering the Umami API on every dashboard reload
-        $this->cache->set($cacheIdentifier, $result, [], 300);
+        $this->cache->set(self::CACHE_IDENTIFIER, $result, [], self::LIFETIME_SUCCESS);
 
         return $result;
     }
@@ -104,6 +112,9 @@ class UmamiStatisticService
         return $values;
     }
 
+    /**
+     * @param array{host: string, username: string, password: string} $config
+     */
     private function login(array $config): string
     {
         $response = $this->requestFactory->request($config['host'] . '/api/auth/login', 'POST', [
@@ -114,6 +125,10 @@ class UmamiStatisticService
         return (string)(json_decode((string)$response->getBody(), true, flags: JSON_THROW_ON_ERROR)['token'] ?? '');
     }
 
+    /**
+     * @param array<string, int|string> $query
+     * @return array<mixed>
+     */
     private function get(string $token, string $url, array $query): array
     {
         $response = $this->requestFactory->request($url, 'GET', [

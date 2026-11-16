@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" target-language="de" datatype="plaintext" original="locallang.xlf" product-name="umami_dashboard">
+        <body>
+            <trans-unit id="widgets.visitors.title" resname="widgets.visitors.title">
+                <source>Visitors</source>
+                <target>Besucher</target>
+            </trans-unit>
+            <trans-unit id="widgets.visitors.subtitle" resname="widgets.visitors.subtitle">
+                <source>Last 14 days (Umami)</source>
+                <target>Letzte 14 Tage (Umami)</target>
+            </trans-unit>
+            <trans-unit id="widgets.visitors.description" resname="widgets.visitors.description">
+                <source>Shows the number of visitors according to Umami.</source>
+                <target>Zeigt die Anzahl der Besucher laut Umami.</target>
+            </trans-unit>
+            <trans-unit id="widgets.pageviews.title" resname="widgets.pageviews.title">
+                <source>Pageviews</source>
+                <target>Seitenaufrufe</target>
+            </trans-unit>
+            <trans-unit id="widgets.pageviews.subtitle" resname="widgets.pageviews.subtitle">
+                <source>Last 14 days (Umami)</source>
+                <target>Letzte 14 Tage (Umami)</target>
+            </trans-unit>
+            <trans-unit id="widgets.pageviews.description" resname="widgets.pageviews.description">
+                <source>Shows the number of pageviews according to Umami.</source>
+                <target>Zeigt die Anzahl der Seitenaufrufe laut Umami.</target>
+            </trans-unit>
+            <trans-unit id="widgets.pageviewsChart.title" resname="widgets.pageviewsChart.title">
+                <source>Umami trend</source>
+                <target>Umami-Verlauf</target>
+            </trans-unit>
+            <trans-unit id="widgets.pageviewsChart.description" resname="widgets.pageviewsChart.description">
+                <source>Pageviews and visitors per day over the last 14 days.</source>
+                <target>Seitenaufrufe und Besucher der letzten 14 Tage pro Tag.</target>
+            </trans-unit>
+            <trans-unit id="widgets.countries.title" resname="widgets.countries.title">
+                <source>Visitors by country</source>
+                <target>Besucher nach Land</target>
+            </trans-unit>
+            <trans-unit id="widgets.countries.description" resname="widgets.countries.description">
+                <source>Top countries of the last 14 days, with flag.</source>
+                <target>Top-Länder der Besucher der letzten 14 Tage mit Flagge.</target>
+            </trans-unit>
+            <trans-unit id="chart.pageviews" resname="chart.pageviews">
+                <source>Pageviews</source>
+                <target>Seitenaufrufe</target>
+            </trans-unit>
+            <trans-unit id="chart.visitors" resname="chart.visitors">
+                <source>Visitors</source>
+                <target>Besucher</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>
